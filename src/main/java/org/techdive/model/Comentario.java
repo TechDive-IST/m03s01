@@ -1,9 +1,14 @@
 package org.techdive.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "COMENTARIOS")
 public class Comentario {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String  texto;
@@ -11,6 +16,10 @@ public class Comentario {
     private LocalDateTime dataInclusao;
 
     private LocalDateTime dataAtualizacao;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "ID_VIDEO", referencedColumnName = "ID_VIDEO")
+    private Video video;
 
 
     public Comentario() { }
@@ -55,4 +64,11 @@ public class Comentario {
         this.dataAtualizacao = dataAtualizacao;
     }
 
+    public Video getVideo() {
+        return video;
+    }
+
+    public void setVideo(Video video) {
+        this.video = video;
+    }
 }
