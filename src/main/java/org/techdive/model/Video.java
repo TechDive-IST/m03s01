@@ -1,11 +1,16 @@
 package org.techdive.model;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Entity
+@Table(name = "VIDEOS")
 public class Video {
 
-    private String id;   // UUID
+    @Id
+    @Column(name = "ID_VIDEO")
+    private String id;  // UUID
 
     private String url;
 
@@ -25,6 +30,7 @@ public class Video {
 
     private LocalDateTime dataAtualizacao;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH, mappedBy = "video")
     private List<Comentario> comentarios;
 
 
