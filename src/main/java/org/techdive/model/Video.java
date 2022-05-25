@@ -34,7 +34,11 @@ public class Video {
     private List<Comentario> comentarios;
 
 
-    public Video() { }
+    public Video() {
+        this.likes = 0;
+        this.visualizacoes = 0;
+        this.duracao = 0;
+    }
 
     public Video(String id, String url, String assunto, String usuario, Integer duracao, Integer visualizacoes, Integer likes, LocalDateTime dataUltimaVisualizacao, LocalDateTime dataInclusao, LocalDateTime dataAtualizacao, List<Comentario> comentarios) {
         this.id = id;
@@ -48,6 +52,20 @@ public class Video {
         this.dataInclusao = dataInclusao;
         this.dataAtualizacao = dataAtualizacao;
         this.comentarios = comentarios;
+    }
+
+
+    public void incrementarLikes() {
+        this.likes++;
+    }
+
+    public void decrementarLikes() {
+        this.likes--;
+    }
+
+    public void incrementarVisualizacao() {
+        this.visualizacoes++;
+        this.dataUltimaVisualizacao = LocalDateTime.now();
     }
 
 
