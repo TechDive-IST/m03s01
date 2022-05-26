@@ -64,6 +64,7 @@ public class VideosService {
     public Integer adicionarVisualizacao(String id) {
         Video video = obterVideoPorId(id);
         video.incrementarVisualizacao();
+        video.setDataUltimaVisualizacao(LocalDateTime.now());
         videosDao.alterar(video);
         return video.getLikes();
     }

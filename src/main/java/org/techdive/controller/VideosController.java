@@ -11,6 +11,7 @@ import org.techdive.service.VideosService;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Link;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -46,7 +47,8 @@ public class VideosController {
     public Response obterPorId(@PathParam(("id")) String id) {
         Video video = service.obterVideoPorId(id);
         VideoResponse resp = VideoMapper.INSTANCE.toResponse(video);
-        return Response.ok(resp).build();
+        resp.adicionarLinks();
+        return Response.ok(resp).links(resp.getLinks().toArray(new Link[0])).build();
     }
 
     @PUT
