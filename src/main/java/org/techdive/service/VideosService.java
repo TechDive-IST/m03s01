@@ -4,13 +4,14 @@ import org.techdive.dao.VideosDao;
 import org.techdive.exception.RegistroExistenteException;
 import org.techdive.exception.RegistroNaoEncontradoException;
 import org.techdive.model.Video;
+import org.techdive.util.Paginador;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
+import static java.util.stream.Collectors.toList;
 
 @RequestScoped
 public class VideosService {
@@ -18,8 +19,21 @@ public class VideosService {
     @Inject
     private VideosDao videosDao;
 
-    public List<Video> obterVideos() {
-        return videosDao.obter();
+    private static int TAMANHO_PAGINA = 2;
+
+
+    public List<Video> obterVideos(String assunto, String ordenadoPor, Integer limite, Integer pagina) {
+        // o ideal é aplicar os filtros e demais operacoes via SQL
+        List<Video> videos = videosDao.obter();
+        if (assunto != null && !assunto.isEmpty())
+            videos = videos.stream().filter(v -> v.getAssunto().equals(assunto)).collect(toList());
+        if (ordenadoPor != null)
+            ordenarResultadoPor(ordenadoPor, videos);
+        if (limite != null)
+            videos = videos.subList(0, limite);
+        if (pagina != null)
+            videos = obterPagina(pagina, videos);
+        return videos;
     }
 
     public Video inserirVideo(Video video) {
@@ -74,6 +88,19 @@ public class VideosService {
         Optional<Video> videoOpt = videosDao.obterPorURL(video.getUrl());
         if (videoOpt.isPresent())
             throw new RegistroExistenteException("Video", video.getUrl());
+    }
+
+    private List<Video> obterPagina(Integer pagina, List<Video> videos) {
+        Paginador<Video> paginador = new Paginador<>(videos, TAMANHO_PAGINA);
+        List<Video> videosPaginados = paginador.obterPagina(pagina);
+        return videosPaginados;
+    }
+
+    private void ordenarResultadoPor(String ordenadoPor, List<Video> videos) {
+        if (ordenadoPor.equals("assunto"))
+            Collections.sort(videos, Comparator.comparing(Video::getAssunto));
+        else if (ordenadoPor.equals("usuario"))
+            Collections.sort(videos, Comparator.comparing(Video::getUsuario));
     }
 
 }

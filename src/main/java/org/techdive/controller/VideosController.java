@@ -35,9 +35,14 @@ public class VideosController {
         return Response.created(URI.create(inserido.getId())).entity(resp).build();
     }
 
+    // sort                -  ordenacao
+    // limit / threshold   -  limite
+    // pagination          -  paginacao
+
     @GET
-    public Response obter() {
-        List<Video> videos = service.obterVideos();
+    public Response obter(@QueryParam("assunto") String assunto,
+            @QueryParam("sort") String ordenadoPor, @QueryParam("limit") Integer limite, @QueryParam("page") Integer pagina) {
+        List<Video> videos = service.obterVideos(assunto, ordenadoPor, limite, pagina);
         List<VideoResponse> resp = videos.stream().map(VideoMapper.INSTANCE::toResponse).collect(toList());
         return Response.ok(resp).build();
     }
