@@ -35,10 +35,6 @@ public class VideosController {
         return Response.created(URI.create(inserido.getId())).entity(resp).build();
     }
 
-    // sort                -  ordenacao
-    // limit / threshold   -  limite
-    // pagination          -  paginacao
-
     @GET
     public Response obter(@QueryParam("assunto") String assunto,
             @QueryParam("sort") String ordenadoPor, @QueryParam("limit") Integer limite, @QueryParam("page") Integer pagina) {

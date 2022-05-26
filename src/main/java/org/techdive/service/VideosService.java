@@ -1,8 +1,10 @@
 package org.techdive.service;
 
+import org.techdive.dao.ComentariosDao;
 import org.techdive.dao.VideosDao;
 import org.techdive.exception.RegistroExistenteException;
 import org.techdive.exception.RegistroNaoEncontradoException;
+import org.techdive.model.Comentario;
 import org.techdive.model.Video;
 import org.techdive.util.Paginador;
 
@@ -18,8 +20,10 @@ public class VideosService {
 
     @Inject
     private VideosDao videosDao;
+    @Inject
+    private ComentariosDao comentariosDao;
 
-    private static int TAMANHO_PAGINA = 2;
+    private static int TAMANHO_PAGINA = 4;
 
 
     public List<Video> obterVideos(String assunto, String ordenadoPor, Integer limite, Integer pagina) {
@@ -83,6 +87,31 @@ public class VideosService {
         return video.getLikes();
     }
 
+    public Comentario inserirComentario(String idVideo, Comentario comentario) {
+        Video video = this.obterVideoPorId(idVideo);
+        comentario.setVideo(video);
+        return comentariosDao.inserir(comentario);
+    }
+
+    public List<Comentario> obterComentarios(String idVideo) {
+        Video video = this.obterVideoPorId(idVideo);
+        return video.getComentarios();
+    }
+
+    public void removerComentario(String idVideo, Long idComentario) {
+        List<Comentario> comentarios = this.obterComentarios(idVideo);
+        boolean existe = comentarios.stream().anyMatch(c -> c.getId().longValue() == idComentario.longValue());
+        if (!existe)
+            throw new RegistroNaoEncontradoException("Comentario", idComentario.toString());
+        comentariosDao.remover(idComentario);
+    }
+
+    public Comentario obterComentario(String idVideo, Long idComentario) {
+        List<Comentario> comentarios = this.obterComentarios(idVideo);
+        Optional<Comentario> comentarioOpt = comentarios.stream().filter(c -> c.getId().longValue() == idComentario).findFirst();
+        return comentarioOpt.orElseThrow(() -> new RegistroNaoEncontradoException("Comentario", idComentario.toString()));
+    }
+
 
     private void verificarSeExisteVideoComURL(Video video) {
         Optional<Video> videoOpt = videosDao.obterPorURL(video.getUrl());
@@ -102,5 +131,4 @@ public class VideosService {
         else if (ordenadoPor.equals("usuario"))
             Collections.sort(videos, Comparator.comparing(Video::getUsuario));
     }
-
 }
