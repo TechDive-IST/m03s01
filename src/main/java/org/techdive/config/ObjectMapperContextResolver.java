@@ -22,6 +22,9 @@ public class ObjectMapperContextResolver implements ContextResolver<ObjectMapper
 
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Link.class, new LinkSerializer());
+        mapper.registerModule(simpleModule);
     }
 
     @Override
