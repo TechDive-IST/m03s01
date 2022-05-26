@@ -22,72 +22,57 @@ public class VideosService {
         return videosDao.obter();
     }
 
-    public Video inserirVideo(Video video) throws RegistroExistenteException {
-        verificarSeExisteComURL(video);
+    public Video inserirVideo(Video video) {
+        verificarSeExisteVideoComURL(video);
         video.setId(UUID.randomUUID().toString());
         video.setDataInclusao(LocalDateTime.now());
         videosDao.salvar(video);
         return video;
     }
 
-    public Video alterar(Video video) throws RegistroNaoEncontradoException, RegistroExistenteException {
-        verificarSeExisteComID(video);
-        String urlOriginal = videosDao.obterPorId(video.getId()).get().getUrl();
-        if (!urlOriginal.equals(video.getUrl()))
-            verificarSeExisteComURL(video);
+    public Video alterar(Video video) {
+        obterVideoPorId(video.getId());
+        verificarSeExisteVideoComURL(video);
         videosDao.alterar(video);
         return video;
     }
 
-    public void remover(String id) throws RegistroNaoEncontradoException {
-        Video video = new Video();
-        video.setId(id);
-        verificarSeExisteComID(video);
+    public void remover(String id) {
+        obterVideoPorId(id);
         videosDao.remover(id);
     }
 
-
-    private void verificarSeExisteComID(Video video) throws RegistroNaoEncontradoException {
-        Optional<Video> videoOpt = videosDao.obterPorId(video.getId());
-        if (!videoOpt.isPresent())
-            throw new RegistroNaoEncontradoException("Video", video.getId());
-    }
-
-    private void verificarSeExisteComURL(Video video) throws RegistroExistenteException {
-        boolean existe = videosDao.obterPorURL(video.getUrl()).isPresent();
-        if (existe)
-            throw new RegistroExistenteException("Video", video.getUrl());
-    }
-
-    public Video obterVideo(String id) throws RegistroNaoEncontradoException {
+    public Video obterVideoPorId(String id) {
         Optional<Video> videoOpt = videosDao.obterPorId(id);
         return videoOpt.orElseThrow(() -> new RegistroNaoEncontradoException("Video", id));
     }
 
-    public Integer adicionarLike(String id) throws RegistroNaoEncontradoException {
-        Optional<Video> videoOpt = videosDao.obterPorId(id);
-        Video video = videoOpt.orElseThrow(() -> new RegistroNaoEncontradoException("Video", id));
+    public Integer adicionarLike(String id) {
+        Video video = obterVideoPorId(id);
         video.incrementarLikes();
         videosDao.alterar(video);
         return video.getLikes();
     }
 
-    public Integer retirarLike(String id) throws RegistroNaoEncontradoException {
-        Optional<Video> videoOpt = videosDao.obterPorId(id);
-        Video video = videoOpt.orElseThrow(() -> new RegistroNaoEncontradoException("Video", id));
+    public Integer retirarLike(String id) {
+        Video video = obterVideoPorId(id);
         video.decrementarLikes();
-        if (video.getLikes() < 0)
-            video.setLikes(0);
         videosDao.alterar(video);
         return video.getLikes();
     }
 
-    public Integer adicionarVisualizacao(String id) throws RegistroNaoEncontradoException {
-        Optional<Video> videoOpt = videosDao.obterPorId(id);
-        Video video = videoOpt.orElseThrow(() -> new RegistroNaoEncontradoException("Video", id));
+    public Integer adicionarVisualizacao(String id) {
+        Video video = obterVideoPorId(id);
         video.incrementarVisualizacao();
         videosDao.alterar(video);
         return video.getLikes();
+    }
+
+
+    private void verificarSeExisteVideoComURL(Video video) {
+        Optional<Video> videoOpt = videosDao.obterPorURL(video.getUrl());
+        if (videoOpt.isPresent())
+            throw new RegistroExistenteException("Video", video.getUrl());
     }
 
 }

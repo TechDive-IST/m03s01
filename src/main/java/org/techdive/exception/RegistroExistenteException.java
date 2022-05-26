@@ -1,16 +1,12 @@
 package org.techdive.exception;
 
-public class RegistroExistenteException extends Exception {
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
-    private String tipoRegistro;
-    private String identificador;
+public class RegistroExistenteException extends WebApplicationException {
 
     public RegistroExistenteException(String tipoRegistro, String identificador) {
-        this.tipoRegistro = tipoRegistro;
-        this.identificador = identificador;
+        super(String.format("%s: Registro existente com identificador: %s", tipoRegistro, identificador), Response.Status.CONFLICT);
     }
 
-    public String getMessage() {
-        return String.format("%s: Registro existente com identificador: %s", tipoRegistro, identificador);
-    }
 }
