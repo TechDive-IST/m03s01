@@ -49,14 +49,14 @@ public class VideosService {
     }
 
     public Video alterar(Video video) {
-        obterVideoPorId(video.getId());
+        verificarSeExisteVideoPorId(video.getId());
         verificarSeExisteVideoComURL(video);
         videosDao.alterar(video);
         return video;
     }
 
     public void remover(String id) {
-        obterVideoPorId(id);
+        verificarSeExisteVideoPorId(id);
         videosDao.remover(id);
     }
 
@@ -112,6 +112,9 @@ public class VideosService {
         return comentarioOpt.orElseThrow(() -> new RegistroNaoEncontradoException("Comentario", idComentario.toString()));
     }
 
+    private void verificarSeExisteVideoPorId(String id) {
+        videosDao.obterPorId(id).orElseThrow(() -> new RegistroNaoEncontradoException("Video", id));
+    }
 
     private void verificarSeExisteVideoComURL(Video video) {
         Optional<Video> videoOpt = videosDao.obterPorURL(video.getUrl());
