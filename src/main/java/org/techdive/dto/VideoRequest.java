@@ -1,8 +1,11 @@
 package org.techdive.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
+@Schema(name = "VideoRequisicao")
 public class VideoRequest implements Serializable  {
 
     @NotNull(message = "Campo obrigatório: URL")
