@@ -4,6 +4,7 @@ import org.techdive.dto.ComentarioRequest;
 import org.techdive.dto.ComentarioResponse;
 import org.techdive.mapper.ComentarioMapper;
 import org.techdive.model.Comentario;
+import org.techdive.security.Authorize;
 import org.techdive.service.VideosService;
 
 import javax.inject.Inject;
@@ -24,6 +25,7 @@ public class ComentariosController {
     @Inject
     private VideosService service;
 
+    @Authorize
     @POST
     public Response inserir(@PathParam("idVideo") String idVideo, @Valid ComentarioRequest request) {
         Comentario comentario = ComentarioMapper.INSTANCE.toModel(request);
@@ -32,6 +34,7 @@ public class ComentariosController {
         return Response.created(URI.create(resp.getId().toString())).entity(resp).build();
     }
 
+    @Authorize
     @DELETE
     @Path("/{idComentario}")
     public Response remover(@PathParam("idVideo") String idVideo, @PathParam("idComentario") Long idComentario) {
