@@ -2,10 +2,9 @@ package org.techdive.controller;
 
 import org.techdive.dto.VideoRequest;
 import org.techdive.dto.VideoResponse;
-import org.techdive.exception.RegistroExistenteException;
-import org.techdive.exception.RegistroNaoEncontradoException;
 import org.techdive.mapper.VideoMapper;
 import org.techdive.model.Video;
+import org.techdive.security.Authorize;
 import org.techdive.service.VideosService;
 
 import javax.inject.Inject;
@@ -27,6 +26,7 @@ public class VideosController {
     @Inject
     private VideosService service;
 
+    @Authorize
     @POST
     public Response inserir(@Valid VideoRequest request) {
         Video video = VideoMapper.INSTANCE.toModel(request);
@@ -52,6 +52,7 @@ public class VideosController {
         return Response.ok(resp).links(resp.getLinks().toArray(new Link[0])).build();
     }
 
+    @Authorize
     @PUT
     @Path("/{id}")
     public Response alterar(@PathParam(("id")) String id, @Valid VideoRequest request) {
@@ -62,6 +63,7 @@ public class VideosController {
         return Response.ok(resp).build();
     }
 
+    @Authorize
     @DELETE
     @Path("/{id}")
     public Response remover(@PathParam("id") String id) {
@@ -69,6 +71,7 @@ public class VideosController {
         return Response.noContent().build();
     }
 
+    @Authorize
     @PUT
     @Path("/{id}/like")
     public Response adicionarLike(@PathParam("id") String id) {
@@ -79,6 +82,7 @@ public class VideosController {
         return Response.ok(resp).build();
     }
 
+    @Authorize
     @DELETE
     @Path("/{id}/like")
     public Response retirarLike(@PathParam("id") String id) {
