@@ -1,5 +1,9 @@
 package org.techdive.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.techdive.dto.VideoRequest;
 import org.techdive.dto.VideoResponse;
 import org.techdive.mapper.VideoMapper;
@@ -26,6 +30,12 @@ public class VideosController {
     @Inject
     private VideosService service;
 
+    @Operation( summary = "Criar Video", description = "Criação de Video",
+            responses = {
+                    @ApiResponse( responseCode = "201", description = "Video criado",
+                            content = {@Content( schema = @Schema(implementation = VideoResponse.class) ) }),
+                    @ApiResponse( responseCode = "400", description = "Request inválida" )
+            })
     @Authorize
     @POST
     public Response inserir(@Valid VideoRequest request) {
@@ -35,6 +45,12 @@ public class VideosController {
         return Response.created(URI.create(inserido.getId())).entity(resp).build();
     }
 
+    @Operation( summary = "Consulta Videos", description = "Serviço de Consulta de Videos etc....",
+            responses = {
+                    @ApiResponse( responseCode = "200", description = "Video consultado",
+                            content = {@Content( schema = @Schema(implementation = VideoResponse.class) ) }),
+                    @ApiResponse( responseCode = "404", description = "Video não encontrado" )
+            })
     @GET
     public Response obter(@QueryParam("assunto") String assunto,
             @QueryParam("sort") String ordenadoPor, @QueryParam("limit") Integer limite, @QueryParam("page") Integer pagina) {
