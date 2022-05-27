@@ -31,7 +31,14 @@
 			"name": "Consulta Videos",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
 				"url": {
 					"raw": "http://localhost:8080/m03s01-1.0-SNAPSHOT/api/videos",
 					"protocol": "http",
@@ -64,6 +71,11 @@
 							"key": "page",
 							"value": "1",
 							"disabled": true
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
 						}
 					]
 				}
@@ -73,11 +85,26 @@
 		{
 			"name": "Inserir Video",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKYW1lcyBULiBLaXJrIiwiaXNzIjoiVGVjaFR1YmUiLCJpYXQiOjE2NTM2MTA3OTksImV4cCI6MTY1MzYxMjU5OX0.UEY_nhwm8Lm1c4cDg6jzYTl_e9q4kwSoRzZGIoh_76U",
 						"type": "text"
 					}
 				],
@@ -189,7 +216,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/m03s01-1.0-SNAPSHOT/api/videos/33ef5feb-2a9b-47df-b2fb-eccaffa59fe8/comentarios",
+					"raw": "http://localhost:8080/m03s01-1.0-SNAPSHOT/api/videos/e03dcea3-6dee-4cba-9a7b-c2bd57b3f085/comentarios/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -199,8 +226,9 @@
 						"m03s01-1.0-SNAPSHOT",
 						"api",
 						"videos",
-						"33ef5feb-2a9b-47df-b2fb-eccaffa59fe8",
-						"comentarios"
+						"e03dcea3-6dee-4cba-9a7b-c2bd57b3f085",
+						"comentarios",
+						"1"
 					]
 				}
 			},
@@ -241,6 +269,16 @@
 		{
 			"name": "Apagar Video",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKYW1lcyBULiBLaXJrIiwiaXNzIjoiVGVjaFR1YmUiLCJpYXQiOjE2NTM2MTA3OTksImV4cCI6MTY1MzYxMjU5OX0.UEY_nhwm8Lm1c4cDg6jzYTl_e9q4kwSoRzZGIoh_76U",
+							"type": "string"
+						}
+					]
+				},
 				"method": "DELETE",
 				"header": [],
 				"body": {
@@ -350,14 +388,20 @@
 		{
 			"name": "Login",
 			"request": {
-				"method": "DELETE",
-				"header": [],
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": ""
+					"raw": "{\n    \"email\": \"james@kirk.com\",\n    \"senha\": \"1234\"\n}"
 				},
 				"url": {
-					"raw": "http://localhost:8080/m03s01-1.0-SNAPSHOT/api/videos/ce63c99a-bb72-4a81-928f-5765a3112de3/like",
+					"raw": "http://localhost:8080/m03s01-1.0-SNAPSHOT/api/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -366,9 +410,7 @@
 					"path": [
 						"m03s01-1.0-SNAPSHOT",
 						"api",
-						"videos",
-						"ce63c99a-bb72-4a81-928f-5765a3112de3",
-						"like"
+						"login"
 					]
 				}
 			},
