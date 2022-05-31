@@ -84,7 +84,7 @@ public class VideosService {
         video.incrementarVisualizacao();
         video.setDataUltimaVisualizacao(LocalDateTime.now());
         videosDao.alterar(video);
-        return video.getLikes();
+        return video.getVisualizacoes();
     }
 
     public Comentario inserirComentario(String idVideo, Comentario comentario) {

@@ -40,6 +40,14 @@ public class Video {
         this.duracao = 0;
     }
 
+    public Video(String id, String url, String assunto, String usuario) {
+        this();
+        this.id = id;
+        this.url = url;
+        this.assunto = assunto;
+        this.usuario = usuario;
+    }
+
     public Video(String id, String url, String assunto, String usuario, Integer duracao, Integer visualizacoes, Integer likes, LocalDateTime dataUltimaVisualizacao, LocalDateTime dataInclusao, LocalDateTime dataAtualizacao, List<Comentario> comentarios) {
         this.id = id;
         this.url = url;
