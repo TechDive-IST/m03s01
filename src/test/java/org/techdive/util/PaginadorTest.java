@@ -9,6 +9,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Testes unitários de Paginador")
 class PaginadorTest {
 
     @Test
