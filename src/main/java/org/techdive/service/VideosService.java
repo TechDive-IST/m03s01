@@ -50,7 +50,7 @@ public class VideosService {
 
     public Video alterar(Video video) {
         verificarSeExisteVideoPorId(video.getId());
-        verificarSeExisteVideoComURL(video);
+        verificarSeExisteOutroVideoComURL(video);
         videosDao.alterar(video);
         return video;
     }
@@ -119,6 +119,12 @@ public class VideosService {
     private void verificarSeExisteVideoComURL(Video video) {
         Optional<Video> videoOpt = videosDao.obterPorURL(video.getUrl());
         if (videoOpt.isPresent())
+            throw new RegistroExistenteException("Video", video.getUrl());
+    }
+
+    private void verificarSeExisteOutroVideoComURL(Video video) {
+        Optional<Video> videoOpt = videosDao.obterPorURL(video.getUrl());
+        if (videoOpt.isPresent() && !videoOpt.get().getId().equals(video.getId()))
             throw new RegistroExistenteException("Video", video.getUrl());
     }
 
