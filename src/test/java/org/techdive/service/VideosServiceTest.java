@@ -77,6 +77,13 @@ class VideosServiceTest {
     }
 
     @Test
+    @DisplayName("Quando id existente, Deve apagar o video")
+    void removerVideo_sucesso() {
+        Mockito.when(videosDao.obterPorId(Mockito.anyString())).thenReturn(Optional.of(new Video()));
+        assertDoesNotThrow(() -> service.remover("id"));
+    }
+
+    @Test
     @DisplayName("Quando dados de visualizacao validos, Deve adicionar visualizacao no video")
     void adicionarVisualizacao() {
         // given
