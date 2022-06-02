@@ -131,5 +131,96 @@ class VideosControllerTest {
         assertEquals(Response.Status.NO_CONTENT.getStatusCode(), result.getStatus());
         assertNull(result.getEntity(), "Não deveria conter objeto no response (decisao de projeto)");
     }
+    
+    @Test
+    void alterar_falha_registroNaoEncontrado() {
+        String id = "id";
+        VideoRequest request = new VideoRequest();
+        Mockito.when(service.alterar(Mockito.any(Video.class))).thenThrow(new RegistroNaoEncontradoException("Video", id));
+        RegistroNaoEncontradoException result = assertThrows(RegistroNaoEncontradoException.class, () -> controller.alterar(id, request));
+        assertTrue(result.getMessage().contains(id));
+    }
+
+    @Test
+    void alterar_falha_registroExistente() {
+        String id = "id";
+        VideoRequest request = new VideoRequest();
+        Mockito.when(service.alterar(Mockito.any(Video.class))).thenThrow(new RegistroExistenteException("Video", id));
+        RegistroExistenteException result = assertThrows(RegistroExistenteException.class, () -> controller.alterar(id, request));
+        assertTrue(result.getMessage().contains(id));
+    }
+
+    @Test
+    void alterar_sucesso() {
+        // given
+        String id = "id";
+        VideoRequest request = new VideoRequest("url", "assunto", "usuario", 30);
+        Video video = VideoMapper.INSTANCE.toModel(request);
+        video.setId(id);
+        Mockito.when(service.alterar(Mockito.any(Video.class))).thenReturn(video);
+        // when
+        Response result = controller.alterar(id, request);
+        // then
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus());
+        assertNotNull(result.getEntity());
+        assertInstanceOf(VideoResponse.class, result.getEntity());
+    }
+
+    @Test
+    @DisplayName("Quando adiciona like em video não existente, Deve lançar exceção")
+    void adicionarLike_falha() {
+        Mockito.when(service.adicionarLike(Mockito.anyString())).thenThrow(new RegistroNaoEncontradoException("Video", "id"));
+        assertThrows(RegistroNaoEncontradoException.class, () -> controller.adicionarLike("id"));
+    }
+
+    @Test
+    @DisplayName("Quando adiciona like em video existente, Deve incrementar quantidade de likes e retornar Video response com id e qtd likes")
+    void adicionarLike_sucesso() {
+        Mockito.when(service.adicionarLike(Mockito.anyString())).thenReturn(1);
+        Response result = controller.adicionarLike("id");
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus(), "Deveria retornar http status code 200");
+        assertNotNull(result.getEntity(), "Deveria retornar um objeto Video Response");
+        VideoResponse resp = (VideoResponse) result.getEntity();
+        assertNotNull(resp.getId());
+        assertNotNull(resp.getLikes());
+    }
+
+    @Test
+    @DisplayName("Quando retira like em video não existente, Deve lançar exceção")
+    void retirarLike_falha() {
+        Mockito.when(service.retirarLike(Mockito.anyString())).thenThrow(new RegistroNaoEncontradoException("Video", "id"));
+        assertThrows(RegistroNaoEncontradoException.class, () -> controller.retirarLike("id"));
+    }
+
+    @Test
+    @DisplayName("Quando retira like em video existente, Deve decrementar quantidade de likes e retornar Video response com id e qtd likes")
+    void retirarLike_sucesso() {
+        Mockito.when(service.retirarLike(Mockito.anyString())).thenReturn(0);
+        Response result = controller.retirarLike("id");
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus(), "Deveria retornar http status code 200");
+        assertNotNull(result.getEntity(), "Deveria retornar um objeto Video Response");
+        VideoResponse resp = (VideoResponse) result.getEntity();
+        assertNotNull(resp.getId());
+        assertNotNull(resp.getLikes());
+    }
+
+    @Test
+    @DisplayName("Quando tenta visualizar video não existente, Deve lançar exceção")
+    void visualizar_falha() {
+        Mockito.when(service.adicionarVisualizacao(Mockito.anyString())).thenThrow(new RegistroNaoEncontradoException("Video", "id"));
+        assertThrows(RegistroNaoEncontradoException.class, () -> controller.visualizar("id"));
+    }
+
+    @Test
+    @DisplayName("Quando visualiza video existente, Deve incrementar quantidade de visualização e retornar Video response com id e qtd visualizacoes")
+    void visualizar_sucesso() {
+        Mockito.when(service.adicionarVisualizacao(Mockito.anyString())).thenReturn(1);
+        Response result = controller.visualizar("id");
+        assertEquals(Response.Status.OK.getStatusCode(), result.getStatus(), "Deveria retornar http status code 200");
+        assertNotNull(result.getEntity(), "Deveria retornar um objeto Video Response");
+        VideoResponse resp = (VideoResponse) result.getEntity();
+        assertNotNull(resp.getId());
+        assertNotNull(resp.getVisualizacoes());
+    }
 
 }
