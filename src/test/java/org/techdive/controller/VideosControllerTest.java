@@ -23,8 +23,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.techdive.TestHelper.obterVideo;
-import static org.techdive.TestHelper.obterVideoRequest;
+import static org.techdive.TestHelper.gerarVideo;
+import static org.techdive.TestHelper.gerarVideoRequest;
 
 @ExtendWith(MockitoExtension.class)
 class VideosControllerTest {
@@ -47,7 +47,7 @@ class VideosControllerTest {
     @DisplayName("Quando requisição com id válido e existente, Deve retornar status OK e objeto de video")
     void obterPorId_sucesso() {
         // given
-        Video video = obterVideo();
+        Video video = gerarVideo();
         String id = video.getId();
         Mockito.when(service.obterVideoPorId(anyString())).thenReturn(video);
         // when
@@ -77,7 +77,7 @@ class VideosControllerTest {
     @Test
     @DisplayName("Quando existe videos cadastrados, Deve retornar status 200 com lista preenchida")
     void obter_sucesso() {
-        List<Video> videos = Arrays.asList(obterVideo(), obterVideo());
+        List<Video> videos = Arrays.asList(gerarVideo(), gerarVideo());
         Mockito.when(service.obterVideos(anyString(), anyString(), anyInt(), anyInt()))
                 .thenReturn(videos);
         // when
@@ -101,7 +101,7 @@ class VideosControllerTest {
     @DisplayName("Quando requisição com dados válidos, Deve retornar status OK e objeto de Video com id preenchido")
     void inserir_sucesso() {
         // given
-        VideoRequest request = obterVideoRequest();
+        VideoRequest request = gerarVideoRequest();
         Video video = VideoMapper.INSTANCE.toModel(request);
         video.setId("id");
         Mockito.when(service.inserirVideo(Mockito.any(Video.class))).thenReturn(video);
